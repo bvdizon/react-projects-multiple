@@ -7,11 +7,14 @@ import { MdRadioButtonChecked } from 'react-icons/md';
 const url = 'https://course-api.com/react-tabs-project';
 
 const App = () => {
+  // setting the initial value of state we need
+  // note that 'jobs' is initalized with empty array
+  // 'value' state will use to control array index to show
   const [loading, setLoading] = useState(true);
   const [jobs, setJobs] = useState([]);
   const [value, setValue] = useState(0);
 
-  // function to call in useEffect to fetch API data
+  // this is the function to call via useEffect to fetch data
   const fetchJobs = async () => {
     const response = await fetch(url);
 
@@ -27,7 +30,7 @@ const App = () => {
 
     // the order of the two lines of code below is important
     // if switched, this will cause error in destructuring
-    // you need to destructure after Loading
+    // set state first before turning loading off
     setJobs(newJobs);
     setLoading(false);
   };
@@ -37,13 +40,12 @@ const App = () => {
     fetchJobs();
   }, []);
 
-  // start of multiple returns
-  // will show loading spinner on loading
+  // start of multiple returns, will show loading spinner on loading
   if (loading) {
     return <Loading />;
   }
 
-  // you need to destructure after Loading
+  // you need to destructure after Loading, else error
   const { title, dates, company, duties } = jobs[value];
 
   return (
@@ -52,9 +54,16 @@ const App = () => {
       <div className='underline'></div>
       <div id='jobsTab'>
         <aside className='companies'>
+          {/* 
+            This part sets the value state, which triggers what to display.
+          */}
           {jobs.map((job, index) => {
             return (
-              <button onClick={() => setValue(index)}>{job.company}</button>
+              <button
+                onClick={() => setValue(index)}
+                className={`btn btn${index === value && '-active'}`}>
+                {job.company}
+              </button>
             );
           })}
         </aside>

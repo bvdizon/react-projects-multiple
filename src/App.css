@@ -115,7 +115,18 @@ figure img {
   }
 
   .companies button {
+    font-weight: 700;
     display: block;
+    margin-bottom: 20px;
+    border-left: 3px solid transparent;
+  }
+
+  .companies button:focus,
+  .companies button:hover,
+  .companies .btn-active {
+    border-left: 3px solid var(--color-theme);
+    color: var(--color-theme);
+    outline: none;
   }
 }
 
