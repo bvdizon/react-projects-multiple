@@ -1,25 +1,82 @@
-import logo from './logo.svg';
+import React, { useEffect, useState } from 'react';
+import Loading from './components/Loading';
 import './App.css';
+import { MdRadioButtonChecked } from 'react-icons/md';
 
-function App() {
+// handler for the API endpoint
+const url = 'https://course-api.com/react-tabs-project';
+
+const App = () => {
+  const [loading, setLoading] = useState(true);
+  const [jobs, setJobs] = useState([]);
+  const [value, setValue] = useState(0);
+
+  // function to call in useEffect to fetch API data
+  const fetchJobs = async () => {
+    const response = await fetch(url);
+
+    // check if there is an error fetching data
+    if (response.status !== 200) {
+      setLoading(false);
+      // custom error message to display
+      throw new Error('Could not fetch jobs.');
+    }
+
+    // setting the state 'jobs' for successful fetch
+    const newJobs = await response.json();
+
+    // the order of the two lines of code below is important
+    // if switched, this will cause error in destructuring
+    // you need to destructure after Loading
+    setJobs(newJobs);
+    setLoading(false);
+  };
+
+  // useEffect to render only once in calling API
+  useEffect(() => {
+    fetchJobs();
+  }, []);
+
+  // start of multiple returns
+  // will show loading spinner on loading
+  if (loading) {
+    return <Loading />;
+  }
+
+  // you need to destructure after Loading
+  const { title, dates, company, duties } = jobs[value];
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <main className='container'>
+      <h1 className='text-center my-lg'>Work Experience</h1>
+      <div className='underline'></div>
+      <div id='jobsTab'>
+        <aside className='companies'>
+          {jobs.map((job, index) => {
+            return (
+              <button onClick={() => setValue(index)}>{job.company}</button>
+            );
+          })}
+        </aside>
+
+        <article>
+          <h2>{title}</h2>
+          <h3>{company}</h3>
+          <p>{dates}</p>
+          <div className='job-duties'>
+            {duties.map((duty, index) => {
+              return (
+                <div key={index}>
+                  <MdRadioButtonChecked />
+                  <p>{duty}</p>
+                </div>
+              );
+            })}
+          </div>
+        </article>
+      </div>
+    </main>
   );
-}
+};
 
 export default App;
