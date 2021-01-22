@@ -1,47 +1,49 @@
+// initial state, declared as object
 export const initialState = {
-  list: [],
+  todoItems: [],
+  showAlert: false,
 };
 
-export const reducer = (state, action) => {
+// reducer function taking in state and action parameters
+const reducer = (state, action) => {
   switch (action.type) {
-    // DELETE an item from the list
-    case 'DELETE':
-      let filterList = state.list.filter((item) => item.id !== action.payload);
-      return {
-        ...state,
-        list: filterList,
-      };
-
-    // ADD or EDIT an item
     case 'ADD':
-      // This part of the code gave me a hard time for I was overthinking it
-      // Just use '.map()' to iterate through the list, and it is important
-      // to run a condition statement to match the ID of the item you want to
-      // edit. Another important to note is that the item is updated with
-      // spread operator and is needed to return.
-      // The last important part is that for each iteration, outside the
-      // condition statment, you must return the item you don't want to
-      // edit to maintain the same set of items in the array.
-      if (action.payload.isEdit) {
-        const editList = state.list.map((item) => {
-          if (item.id === action.payload.id) {
-            return { ...item, name: action.payload.name };
-          }
-          return item;
-        });
-
+      // evaluates if the payload is for ADD or EDIT
+      // '.toEdit' is in the payload with boolean value
+      if (action.payload.toEdit) {
         return {
           ...state,
-          list: editList,
-        };
-      } else {
-        return {
-          ...state,
-          list: [...state.list, action.payload],
+          todoItems: state.todoItems.map((item) => {
+            if (item.id === action.payload.id) {
+              return { ...item, title: action.payload.title };
+            }
+            return item;
+          }),
         };
       }
+      // if '.toEdit' in payload is false, new item is created
+      const newItems = [...state.todoItems, action.payload];
+      return {
+        ...state,
+        todoItems: newItems,
+      };
 
+    case 'DELETE':
+      const filteredItems = state.todoItems.filter(
+        (item) => item.id !== action.payload
+      );
+      return {
+        ...state,
+        todoItems: filteredItems,
+      };
+
+    case 'CLEAR_ALL':
+      return {
+        ...state,
+        todoItems: [],
+      };
     default:
       return state;
   }
 };
+export default reducer;

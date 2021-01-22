@@ -1,74 +1,101 @@
-import { useReducer, useState } from 'react';
-import { reducer, initialState } from './reducer';
+import React, { useReducer, useState } from 'react';
+import reducer, { initialState } from './reducer';
+import { FaEdit, FaTrashAlt } from 'react-icons/fa';
 import './App.css';
+/*
+  These are temporary data to pass to state.todoItems
+  const data = [
+    { id: 1, title: 'Todo item #1' },
+    { id: 2, title: 'Todo item #2' },
+    { id: 3, title: 'Todo item #3' },
+  ];
+ */
 
-function App() {
+const App = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const [itemName, setItemName] = useState('');
-  const [itemIDToEdit, setItemIDToEdit] = useState(null);
-  const [isEditing, setIsEditing] = useState(false);
+  const [taskItem, setTaskItem] = useState('');
+  const [editID, setEditID] = useState(null);
+  const [isEdit, setIsEdit] = useState(false);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (isEditing) {
-      const editItem = { id: itemIDToEdit, name: itemName, isEdit: true };
+  // Adding and Editing is using the same form.
+  // Thus, logic is set to determine how to process the data in the form.
+  // The control state to determine if item is for add or edit is
+  // the 'isEdit' state.
+  const addItem = (item) => {
+    if (isEdit) {
+      const editItem = { id: editID, title: taskItem, toEdit: true };
       dispatch({ type: 'ADD', payload: editItem });
-
-      setItemName('');
-      setItemIDToEdit(null);
-      setIsEditing(false);
+      setIsEdit(false);
+      setEditID(null);
     } else {
-      const newItem = {
-        id: new Date().getTime().toString(),
-        name: itemName,
-        isEdit: false,
-      };
-      dispatch({ type: 'ADD', payload: newItem });
-      setItemName('');
+      const newItem = { id: new Date().getTime().toString(), title: item };
+      dispatch({ type: 'ADD', payload: newItem, toEdit: false });
     }
   };
 
-  const editItem = (id, name) => {
-    // edit an item
-    setIsEditing(true);
-    setItemName(name);
-    setItemIDToEdit(id);
+  // changing state necessary to edit, to be evaluated by 'addItem' function
+  const handleClickEdit = (id, title) => {
+    setTaskItem(title);
+    setEditID(id);
+    setIsEdit(true);
   };
 
   return (
-    <div className='App'>
-      <h2>Grocery List Items</h2>
+    <section className='section' id='todoApp'>
+      <h2>To Do List</h2>
 
-      <form onSubmit={handleSubmit}>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          addItem(taskItem);
+          setTaskItem('');
+        }}>
         <input
           type='text'
-          value={itemName}
-          onChange={(e) => setItemName(e.target.value)}
+          value={taskItem}
+          onChange={(e) => setTaskItem(e.target.value)}
           required
         />
-        <button type='submit'>Add to List</button>
+        {/* conditional styling of the submit button */}
+        <button className={isEdit ? 'btn btn-edit' : 'btn btn-green'}>
+          {isEdit ? 'Save Edit' : 'Add to List'}
+        </button>
       </form>
 
-      <ul>
-        {state.list.map((item) => {
-          return (
-            <li key={item.id}>
-              <div>{item.name}</div>
-              <div>
-                <span onClick={() => editItem(item.id, item.name)}>Edit</span> |
-                <span
-                  onClick={() =>
-                    dispatch({ type: 'DELETE', payload: item.id })
-                  }>
-                  Delete
-                </span>
-              </div>
-            </li>
-          );
-        })}
+      {state.todoItems.length > 0 && <h3>outstanding tasks</h3>}
+      <ul className='todo-list'>
+        {state.todoItems.map((item) => (
+          <li key={item.id}>
+            <span title={item.title}>
+              {/* setting the max number of characters per todo item */}
+              {item.title.length > 30
+                ? item.title.substring(0, 27) + '...'
+                : item.title}
+            </span>
+            <div>
+              {/* 'handleClickEdit' is called here to change appropriate state(s) */}
+              <span onClick={() => handleClickEdit(item.id, item.title)}>
+                <FaEdit />
+              </span>{' '}
+              &nbsp; | &nbsp;
+              <span
+                onClick={() => dispatch({ type: 'DELETE', payload: item.id })}>
+                <FaTrashAlt />
+              </span>
+            </div>
+          </li>
+        ))}
       </ul>
-    </div>
+
+      {state.todoItems.length > 0 && (
+        <button
+          className='btn btn-danger my-15'
+          onClick={() => dispatch({ type: 'CLEAR_ALL' })}>
+          clear tasks
+        </button>
+      )}
+    </section>
   );
-}
+};
 
 export default App;

@@ -41,7 +41,7 @@ Variables
   --radius: 0.25rem;
   --light-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
   --dark-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-  --max-width: 1170px;
+  --max-width: 400px;
   --fixed-width: 620px;
 }
 /*
@@ -132,4 +132,76 @@ p {
   .section {
     width: 95vw;
   }
+}
+
+/* Additional Styles */
+
+#todoApp {
+  text-align: center;
+  padding-top: 50px;
+}
+
+form {
+  margin: 30px 0;
+}
+
+form > * {
+  display: block;
+  margin: 0 auto;
+  margin-bottom: 10px;
+  padding: 10px;
+  border: none;
+}
+
+form > *:hover,
+form > *:focus {
+  outline: none;
+}
+
+form input {
+  width: 50%;
+  background-color: transparent;
+  border-bottom: 1px solid var(--clr-green-dark);
+}
+
+.btn {
+  cursor: pointer;
+  text-transform: uppercase;
+  padding: 10px;
+  border: none;
+}
+
+.btn:hover,
+.btn:focus {
+  outline: none;
+}
+
+.btn-green {
+  background-color: var(--clr-green-dark);
+  color: #fff;
+}
+
+.btn-edit {
+  background-color: var(--clr-primary-1);
+  color: #fff;
+}
+
+.btn-danger {
+  background-color: var(--clr-red-dark);
+  color: #fff;
+}
+
+.todo-list li {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  border-bottom: 1px solid var(--clr-grey-1);
+}
+
+li div span {
+  cursor: pointer;
+}
+
+.my-15 {
+  margin: 15px 0;
 }
