@@ -1,7 +1,8 @@
-import React, { useReducer, useState } from 'react';
+import React, { useEffect, useReducer, useState } from 'react';
 import reducer, { initialState } from './reducer';
 import { FaEdit, FaTrashAlt } from 'react-icons/fa';
 import './App.css';
+import Alert from './components/Alert';
 /*
   These are temporary data to pass to state.todoItems
   const data = [
@@ -40,9 +41,21 @@ const App = () => {
     setIsEdit(true);
   };
 
+  const closeAlert = () => {
+    dispatch({ type: 'CLOSE_ALERT' });
+  };
+
   return (
     <section className='section' id='todoApp'>
       <h2>To Do List</h2>
+
+      {state.alert.show && (
+        <Alert
+          message={state.alert.message}
+          closeAlert={closeAlert}
+          type={state.alert.type}
+        />
+      )}
 
       <form
         onSubmit={(e) => {
