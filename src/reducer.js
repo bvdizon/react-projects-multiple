@@ -12,17 +12,17 @@ export const reducer = (state, action) => {
         list: filterList,
       };
 
-    // ADD an item to the list
+    // ADD or EDIT an item
     case 'ADD':
+      // This part of the code gave me a hard time for I was overthinking it
+      // Just use '.map()' to iterate through the list, and it is important
+      // to run a condition statement to match the ID of the item you want to
+      // edit. Another important to note is that the item is updated with
+      // spread operator and is needed to return.
+      // The last important part is that for each iteration, outside the
+      // condition statment, you must return the item you don't want to
+      // edit to maintain the same set of items in the array.
       if (action.payload.isEdit) {
-        // This part of the code gave me a hard time for I was overthinking it
-        // Just use '.map()' to iterate through the list, and it is important
-        // to run a condition statement to match the ID of the item you want to
-        // edit. Another important to note is that the item is updated with
-        // spread operator and is needed to return.
-        // The last important part is that for each iteration, outside the
-        // condition statment, you must return the item you don't want to
-        // edit to maintain the same set of items in the array.
         const editList = state.list.map((item) => {
           if (item.id === action.payload.id) {
             return { ...item, name: action.payload.name };
@@ -34,11 +34,12 @@ export const reducer = (state, action) => {
           ...state,
           list: editList,
         };
+      } else {
+        return {
+          ...state,
+          list: [...state.list, action.payload],
+        };
       }
-      return {
-        ...state,
-        list: [...state.list, action.payload],
-      };
 
     default:
       return state;

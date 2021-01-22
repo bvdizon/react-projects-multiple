@@ -24,6 +24,7 @@ function App() {
         isEdit: false,
       };
       dispatch({ type: 'ADD', payload: newItem });
+      setItemName('');
     }
   };
 
