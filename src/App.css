@@ -196,6 +196,7 @@ form input {
   justify-content: space-between;
   padding: 10px;
   border-bottom: 1px solid var(--clr-grey-1);
+  text-transform: capitalize;
 }
 
 li div span {

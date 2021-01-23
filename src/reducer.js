@@ -1,6 +1,6 @@
 // initial state, declared as object
 export const initialState = {
-  todoItems: [],
+  todoItems: [{ id: 1234, title: 'hello there again - reducer.js' }],
   alert: { show: false, message: '', type: '' },
 };
 

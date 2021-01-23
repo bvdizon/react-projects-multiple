@@ -3,20 +3,33 @@ import reducer, { initialState } from './reducer';
 import { FaEdit, FaTrashAlt } from 'react-icons/fa';
 import './App.css';
 import Alert from './components/Alert';
-/*
-  These are temporary data to pass to state.todoItems
-  const data = [
-    { id: 1, title: 'Todo item #1' },
-    { id: 2, title: 'Todo item #2' },
-    { id: 3, title: 'Todo item #3' },
-  ];
- */
+
+// Getting items from localStorage, and returning values in array.
+// Ternary operator; if items exist in LS, parse it and return,
+// if items don't exist, return empty array '[]'
+const itemsLS = () => {
+  const items = localStorage.getItem('items');
+  return JSON.parse(items);
+};
+
+// Passing the items in localStorage to useReducer() third parameter
+// which sets the second argument of this hook.
+const initState = () => {
+  return {
+    todoItems: itemsLS(),
+    alert: { show: false, message: '', type: '' },
+  };
+};
 
 const App = () => {
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const [state, dispatch] = useReducer(reducer, initialState, initState);
   const [taskItem, setTaskItem] = useState('');
   const [editID, setEditID] = useState(null);
   const [isEdit, setIsEdit] = useState(false);
+
+  useEffect(() => {
+    localStorage.setItem('items', JSON.stringify(state.todoItems));
+  }, [state.todoItems]);
 
   // Adding and Editing is using the same form.
   // Thus, logic is set to determine how to process the data in the form.
